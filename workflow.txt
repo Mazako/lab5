@@ -1,0 +1,22 @@
+Jak to ma mniej wiecej dzialac:
+    -Potrzebujemy panelu, który rysuje co jakiś czas stan symulacji
+    -To musi działać w osobnym wątku, nie w EDT XXXXXX
+        -jak to zrobic?
+        -nie da sie. Swing nie jest thread safe, więc okno musi być w EDT. Innej opcji nie ma
+    -jeżeli symulacja działa w osobnym wątku, to musimy strzelać invokeLater() do EDT w...
+        -symulacji? (paintPanel -> symulacja)
+        -klasy okna? (symulacja -> paintPanel) VVVVVV
+
+Struktura:
+Busy <- symulacja <- paintPanel <- *Osobny wątek*
+
+Busy:
+    -Dodać współrzędne X i Y, jakoś pożenić wymiary i stany tego autobusu
+Symulacja:
+    -jedyne co musi robić, to przekazywać listę wszystkich busów
+    -Możemy w sumie przekazać tylko referencję na listę wszystkich busów
+Osobny wątek:
+    -wywołuje co 20ms(?) metode repaint
+PaintPanel:
+    -Rysu rysu
+    -w BLOKU SYNCHRONIZOWANYM
