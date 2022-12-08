@@ -115,4 +115,8 @@ public class NarrowBridgeSimulation implements Runnable{
     public void setPauseDelay(int pauseDelay) {
         this.pauseDelay = pauseDelay;
     }
+
+    public LinkedList<Bus> getBusQueue() {
+        return busQueue;
+    }
 }

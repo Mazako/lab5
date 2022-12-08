@@ -1,7 +1,7 @@
 package simulation;
 
 import java.util.concurrent.ThreadLocalRandom;
-class Bus implements Runnable{
+public class Bus implements Runnable{
 
     public static final int MIN_BOARDING_TIME = 1000;
     public static final int MAX_BOARDING_TIME = 10000;
@@ -12,7 +12,7 @@ class Bus implements Runnable{
     private static int busesId;
     private final int id;
     private final NarrowBridgeSimulation simulationCallback;
-    private DrivingDirection drivingDirection;
+    private final DrivingDirection drivingDirection;
 
     public Bus(NarrowBridgeSimulation simulationCallback, DrivingDirection drivingDirection) {
         this.simulationCallback = simulationCallback;
