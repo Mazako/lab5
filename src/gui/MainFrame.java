@@ -67,8 +67,9 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
         this.add(atBridgeLabel);
 
         atBridgeTextField.setPreferredSize(new Dimension(430, 28));
-        atBridgeTextField.setEnabled(false);
+        atBridgeTextField.setEditable(false);
         atBridgeTextField.setFont(textFieldFont);
+        atBridgeTextField.setBackground(Color.WHITE);
         this.add(atBridgeTextField);
 
         queueLabel.setFont(labelFont);
@@ -76,12 +77,15 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
 
         queueTextField.setPreferredSize(new Dimension(430, 28));
         queueTextField.setFont(textFieldFont);
-        queueTextField.setEnabled(false);
+        queueTextField.setEditable(false);
+        queueTextField.setBackground(Color.WHITE);
         this.add(queueTextField);
 
         logPanel.setPreferredSize(new Dimension(550, 600));
         logPanel.setViewportView(logTextArea);
         logTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
+        logTextArea.setEditable(false);
+        logTextArea.setBackground(Color.WHITE);
         this.add(logPanel);
         this.setVisible(true);
     }

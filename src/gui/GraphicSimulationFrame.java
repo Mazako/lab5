@@ -11,6 +11,8 @@ public class GraphicSimulationFrame extends JFrame {
 
     public GraphicSimulationFrame(GraphicSimulationPaintPanel graphicSimulationPaintPanel) {
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        this.setTitle("Graficzny widok symulacji");
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setResizable(false);
         this.graphicSimulationPaintPanel = graphicSimulationPaintPanel;
         this.add(graphicSimulationPaintPanel);
