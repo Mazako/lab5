@@ -31,7 +31,7 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
         this.narrowBridgeSimulation = narrowBridgeSimulation;
         narrowBridgeSimulation.addPropertyChangeListener(this);
         Font labelFont = new Font(Font.SERIF, Font.PLAIN, 18);
-        Font textFieldFont = new Font(Font.MONOSPACED, Font.ITALIC, 18);
+        Font textFieldFont = new Font(Font.MONOSPACED, Font.BOLD, 18);
         this.setTitle("Symulacja przejazdu przez wąski most");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
