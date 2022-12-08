@@ -6,9 +6,11 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Hashtable;
 
-public class MainFrame extends JFrame implements ChangeListener {
+public class MainFrame extends JFrame implements ChangeListener, PropertyChangeListener {
     public static final int WINDOW_WIDTH = 600;
     public static final int WINDOW_HEIGHT = 800;
     private final JLabel drivingLimitationsLabel = new JLabel("Ograniczenie ruchu: ");
@@ -27,6 +29,7 @@ public class MainFrame extends JFrame implements ChangeListener {
     public MainFrame(JTextArea logs, NarrowBridgeSimulation narrowBridgeSimulation) {
         this.logTextArea = logs;
         this.narrowBridgeSimulation = narrowBridgeSimulation;
+        narrowBridgeSimulation.addPropertyChangeListener(this);
         Font labelFont = new Font(Font.SERIF, Font.PLAIN, 18);
         Font textFieldFont = new Font(Font.MONOSPACED, Font.ITALIC, 18);
         this.setTitle("Symulacja przejazdu przez wąski most");
@@ -88,5 +91,15 @@ public class MainFrame extends JFrame implements ChangeListener {
         if (e.getSource() == drivingIntensitySlider) {
             narrowBridgeSimulation.setPauseDelay(drivingIntensitySlider.getValue());
         }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        SwingUtilities.invokeLater(() -> {
+            String bussesOnBridgeMessage = narrowBridgeSimulation.getBussesOnBridgeMessage();
+            String waitingBusesStringMessage = narrowBridgeSimulation.getWaitingBusesStringMessage();
+            atBridgeTextField.setText(bussesOnBridgeMessage);
+            queueTextField.setText(waitingBusesStringMessage);
+        });
     }
 }
