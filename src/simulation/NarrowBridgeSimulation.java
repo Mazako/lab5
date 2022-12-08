@@ -1,10 +1,15 @@
 package simulation;
 
 import javax.swing.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class NarrowBridgeSimulation implements Runnable{
     private JTextArea logs;
     private boolean started;
+
+    private final LinkedList<Bus> busQueue = new LinkedList<>();
+    private final List<Bus> busesOnTheBridge = new LinkedList<>();
 
     private int pauseDelay;
     public NarrowBridgeSimulation(JTextArea logs) {
@@ -17,11 +22,10 @@ public class NarrowBridgeSimulation implements Runnable{
         this.started = true;
         while (started) {
             new Thread(() -> {
-                System.out.println("SIEMA");
-                SwingUtilities.invokeLater(() -> logs.append("SIEMA\n"));
+                SwingUtilities.invokeLater(() -> logs.append("Rogal ty kurwo\n"));
             }).start();
             try {
-                Thread.sleep(2000 - pauseDelay);
+                Thread.sleep(5000 - pauseDelay);
             } catch (InterruptedException e) {
                 JOptionPane.showMessageDialog(null,
                         "Wystąpił błąd symulacji. program zostanie zamkniety",

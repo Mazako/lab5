@@ -48,14 +48,14 @@ public class MainFrame extends JFrame implements ChangeListener {
 
         drivingIntensitySlider.setPaintLabels(true);
         drivingIntensitySlider.setPreferredSize(new Dimension(370, 50));
-        drivingIntensitySlider.setMaximum(1000);
-        drivingIntensitySlider.setMajorTickSpacing(500);
+        drivingIntensitySlider.setMaximum(4000);
+        drivingIntensitySlider.setMajorTickSpacing(2000);
         drivingIntensitySlider.setPaintTicks(true);
         drivingIntensitySlider.setValue(0);
         Hashtable<Integer, JLabel> sliderLabels = new Hashtable<>();
-        sliderLabels.put(0, new JLabel("Małe(2s)"));
-        sliderLabels.put(500, new JLabel("Średnie(1.5s)"));
-        sliderLabels.put(1000, new JLabel("Duże(1s)"));
+        sliderLabels.put(0, new JLabel("Małe(5s)"));
+        sliderLabels.put(2000, new JLabel("Średnie(3s)"));
+        sliderLabels.put(4000, new JLabel("Duże(1s)"));
         drivingIntensitySlider.setLabelTable(sliderLabels);
         drivingIntensitySlider.addChangeListener(this);
         this.add(drivingIntensitySlider);
@@ -79,7 +79,6 @@ public class MainFrame extends JFrame implements ChangeListener {
         logPanel.setPreferredSize(new Dimension(550, 600));
         logPanel.setViewportView(logTextArea);
         logTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
-        logTextArea.append("chujxD");
         this.add(logPanel);
         this.setVisible(true);
     }
