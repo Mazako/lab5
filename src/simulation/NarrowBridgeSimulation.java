@@ -3,6 +3,7 @@ package simulation;
 import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -15,6 +16,8 @@ public class NarrowBridgeSimulation implements Runnable{
 
     private final LinkedList<Bus> busQueue = new LinkedList<>();
     private final List<Bus> busesOnTheBridge = new LinkedList<>();
+
+    private final List<Bus> allBuses = new ArrayList<>();
 
     private int maxBusesOnBridge = 1;
 
@@ -31,6 +34,7 @@ public class NarrowBridgeSimulation implements Runnable{
             new Thread(() -> {
                 Bus.DrivingDirection direction = chooseRandomDirection();
                 Bus bus = new Bus(this, direction);
+                allBuses.add(bus);
                 new Thread(bus).start();
             }).start();
             try {
@@ -56,6 +60,7 @@ public class NarrowBridgeSimulation implements Runnable{
 
     synchronized void getOnTheBridge(Bus bus) throws InterruptedException {
         busQueue.add(bus);
+        bus.setX(280);
         support.firePropertyChange("Changed sizes", busQueue.size() - 1, busQueue.size());
         while(busesOnTheBridge.size() >= maxBusesOnBridge) {
             writeToLog(String.format("[%d -> %s]: czeka przed mostem", bus.getId(), bus.getDrivingDirection()));
@@ -116,7 +121,7 @@ public class NarrowBridgeSimulation implements Runnable{
         this.pauseDelay = pauseDelay;
     }
 
-    public LinkedList<Bus> getBusQueue() {
-        return busQueue;
+    public List<Bus> getAllBuses() {
+        return allBuses;
     }
 }
