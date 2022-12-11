@@ -31,7 +31,7 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
     private final JLabel queueLabel = new JLabel("    Kolejka: ");
     private final JComboBox<?> drivingLimitationsComboBox;
     private final JSlider drivingIntensitySlider = new JSlider();
-    private final JTextField atBridgeTextField =  new JTextField();
+    private final JTextField atBridgeTextField = new JTextField();
     private final JTextField queueTextField = new JTextField();
     private final JScrollPane logPanel = new JScrollPane();
     private final JTextArea logTextArea;

@@ -3,12 +3,12 @@ package simulation;
 import gui.GraphicSimulationPaintPanel;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
-public class Bus implements Runnable{
+public class Bus implements Runnable {
 
     public static final int MIN_BOARDING_TIME = 1000;
     public static final int MAX_BOARDING_TIME = 10000;
@@ -16,33 +16,34 @@ public class Bus implements Runnable{
     public static final int CROSSING_BRIDGE_TIME = 3000;
     public static final int GETTING_PARKING_TIME = 500;
     public static final int UNLOADING_TIME = 1000;
-    private static int busesId;
-
-    private static final List<Integer> AVAILABLE_Y = new ArrayList<>() ;
+    private static final List<Integer> AVAILABLE_Y = new ArrayList<>();
     private static final List<Integer> RESERVE_Y = new ArrayList<>();
     private static final List<Integer> AVAILABLE_Y_PERFECT_COPY;
     private static final List<Integer> RESERVE_Y_PERFECT_COPY;
+    private static int busesId;
 
     static {
-        IntStream.iterate(0, x -> x < 800 , x -> x + 40)
+        IntStream.iterate(0, x -> x < 800, x -> x + 40)
                 .skip(1L)
                 .forEach(AVAILABLE_Y::add);
-        IntStream.iterate(60, x -> x < 760, x-> x + 40)
+        IntStream.iterate(60, x -> x < 760, x -> x + 40)
                 .forEach(RESERVE_Y::add);
         AVAILABLE_Y_PERFECT_COPY = new ArrayList<>(AVAILABLE_Y);
         RESERVE_Y_PERFECT_COPY = new ArrayList<>(RESERVE_Y);
-     }
+    }
+
     private final int id;
     private final NarrowBridgeSimulation simulationCallback;
     private final DrivingDirection drivingDirection;
     private boolean waitingOnBridge;
     private int x;
     private int y;
+
     public Bus(NarrowBridgeSimulation simulationCallback, DrivingDirection drivingDirection) {
         this.simulationCallback = simulationCallback;
         this.drivingDirection = drivingDirection;
         this.id = (++busesId) % 100;
-        this.x = drivingDirection == DrivingDirection.EAST ? 0 :  GraphicSimulationPaintPanel.PAINT_PANEL_WIDTH;
+        this.x = drivingDirection == DrivingDirection.EAST ? 0 : GraphicSimulationPaintPanel.PAINT_PANEL_WIDTH;
         if (!AVAILABLE_Y.isEmpty()) {
             this.y = AVAILABLE_Y.get(ThreadLocalRandom.current().nextInt(0, AVAILABLE_Y.size()));
             AVAILABLE_Y.remove((Integer) this.y);

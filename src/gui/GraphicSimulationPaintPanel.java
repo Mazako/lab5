@@ -7,15 +7,13 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class GraphicSimulationPaintPanel extends JPanel implements MouseMotionListener {
 
     public static final int PAINT_PANEL_WIDTH = GraphicSimulationFrame.WINDOW_WIDTH - 17;
     public static final int PAINT_PANEL_HEIGHT = GraphicSimulationFrame.WINDOW_HEIGHT - 40;
-    public static final Font AREA_FONT = new Font(Font.DIALOG, Font.PLAIN, 48);
+    public static final Font AREA_FONT = new Font(Font.DIALOG, Font.PLAIN, 36);
     public static final int PARKING_WIDTH = 60;
     public static final int ROAD_TO_BRIDGE_WIDTH = 200;
 
@@ -23,7 +21,8 @@ public class GraphicSimulationPaintPanel extends JPanel implements MouseMotionLi
 
     public static final int BRIDGE_QUEUE_WIDTH = 60;
     private final List<Bus> allBuses;
-    public GraphicSimulationPaintPanel(List<Bus> allBuses)  {
+
+    public GraphicSimulationPaintPanel(List<Bus> allBuses) {
         this.allBuses = allBuses;
         this.addMouseMotionListener(this);
     }
@@ -51,23 +50,23 @@ public class GraphicSimulationPaintPanel extends JPanel implements MouseMotionLi
         AffineTransform affineTransform = new AffineTransform();
         affineTransform.rotate(-Math.PI / 2); //obrot o 90st
         g2d.setTransform(affineTransform);
-        g2d.drawString("Parking", -750, PARKING_WIDTH);
-        g2d.drawString("Parking", -350, PARKING_WIDTH);
-        g2d.drawString("Parking", -350, PAINT_PANEL_WIDTH + 3 * PARKING_WIDTH);
-        g2d.drawString("Parking", -750, PAINT_PANEL_WIDTH + 3 * PARKING_WIDTH);
+        g2d.drawString("Parking", -650, PARKING_WIDTH / 2 + 10);
+        g2d.drawString("Parking", -250, PARKING_WIDTH / 2 + 10);
+        g2d.drawString("Parking", -650, PAINT_PANEL_WIDTH - PARKING_WIDTH / 2 + 10);
+        g2d.drawString("Parking", -250, PAINT_PANEL_WIDTH - PARKING_WIDTH / 2 + 10);
 
-        g2d.drawString("Droga", -740, (int) (PARKING_WIDTH + 0.75 * ROAD_TO_BRIDGE_WIDTH));
-        g2d.drawString("Droga", -340, (int) (PARKING_WIDTH + 0.75 * ROAD_TO_BRIDGE_WIDTH));
-        g2d.drawString("Droga", -340, (int) (PAINT_PANEL_WIDTH + 0.25 * PARKING_WIDTH));
-        g2d.drawString("Droga", -740, (int) (PAINT_PANEL_WIDTH + 0.25 * PARKING_WIDTH));
+        g2d.drawString("Droga", -640, PARKING_WIDTH + ROAD_TO_BRIDGE_WIDTH / 2);
+        g2d.drawString("Droga", -240, PARKING_WIDTH + ROAD_TO_BRIDGE_WIDTH / 2);
+        g2d.drawString("Droga", -640, PAINT_PANEL_WIDTH - ROAD_TO_BRIDGE_WIDTH / 2 - PARKING_WIDTH);
+        g2d.drawString("Droga", -240, PAINT_PANEL_WIDTH - ROAD_TO_BRIDGE_WIDTH / 2 - PARKING_WIDTH);
 
-        g2d.drawString("ZOLL", -730, PARKING_WIDTH + ROAD_TO_BRIDGE_WIDTH + 2 * BRIDGE_QUEUE_WIDTH);
-        g2d.drawString("ZOLL", -330, PARKING_WIDTH + ROAD_TO_BRIDGE_WIDTH + 2 * BRIDGE_QUEUE_WIDTH);
-        g2d.drawString("ZOLL", -330, PAINT_PANEL_WIDTH - 140);
-        g2d.drawString("ZOLL", -730, PAINT_PANEL_WIDTH - 140);
+        g2d.drawString("ZOLL", -630, PARKING_WIDTH + ROAD_TO_BRIDGE_WIDTH + BRIDGE_QUEUE_WIDTH / 2 + 10);
+        g2d.drawString("ZOLL", -230, PARKING_WIDTH + ROAD_TO_BRIDGE_WIDTH + BRIDGE_QUEUE_WIDTH / 2 + 10);
+        g2d.drawString("ZOLL", -630, PAINT_PANEL_WIDTH - PARKING_WIDTH - ROAD_TO_BRIDGE_WIDTH - BRIDGE_QUEUE_WIDTH / 2 + 10);
+        g2d.drawString("ZOLL", -230, PAINT_PANEL_WIDTH - PARKING_WIDTH - ROAD_TO_BRIDGE_WIDTH - BRIDGE_QUEUE_WIDTH / 2 + 10);
 
-        g2d.drawString("Nysa", -330, PARKING_WIDTH + ROAD_TO_BRIDGE_WIDTH + BRIDGE_QUEUE_WIDTH +  BRIDGE_WIDTH + 25);
-        g2d.drawString("Nysa", -730, PARKING_WIDTH + ROAD_TO_BRIDGE_WIDTH + BRIDGE_QUEUE_WIDTH +  BRIDGE_WIDTH + 25);
+        g2d.drawString("Most", -630, PARKING_WIDTH + ROAD_TO_BRIDGE_WIDTH + BRIDGE_QUEUE_WIDTH + BRIDGE_WIDTH / 2 + 10);
+        g2d.drawString("Most", -230, PARKING_WIDTH + ROAD_TO_BRIDGE_WIDTH + BRIDGE_QUEUE_WIDTH + BRIDGE_WIDTH / 2 + 10);
         g2d.setTransform(normalTransform);
 
     }
@@ -85,7 +84,7 @@ public class GraphicSimulationPaintPanel extends JPanel implements MouseMotionLi
 
     private void paintRoadToBus(Graphics2D g2d) {
         g2d.setColor(Color.DARK_GRAY);
-        g2d.fillRect(PARKING_WIDTH , 0, ROAD_TO_BRIDGE_WIDTH, PAINT_PANEL_HEIGHT);
+        g2d.fillRect(PARKING_WIDTH, 0, ROAD_TO_BRIDGE_WIDTH, PAINT_PANEL_HEIGHT);
         g2d.fillRect(PAINT_PANEL_WIDTH - PARKING_WIDTH - ROAD_TO_BRIDGE_WIDTH, 0, ROAD_TO_BRIDGE_WIDTH, PAINT_PANEL_HEIGHT);
 
     }

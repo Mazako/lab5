@@ -9,17 +9,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class NarrowBridgeSimulation implements Runnable{
+public class NarrowBridgeSimulation implements Runnable {
     private static final int ANTI_DEADLOCK_CARS_LIMIT = 6;
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
-    private JTextArea logs;
-    private boolean started;
-
     private final LinkedList<Bus> busQueue = new LinkedList<>();
     private final List<Bus> busesOnTheBridge = new LinkedList<>();
-
     private final List<Bus> allBuses;
-
+    private JTextArea logs;
+    private boolean started;
     private int maxBusesOnBridge = 1;
 
     private volatile boolean renovation = false;
@@ -31,10 +28,11 @@ public class NarrowBridgeSimulation implements Runnable{
     private int drivenCarsInOneDirection = 0;
     private int pauseDelay;
     private int westProbability = 50;
+
     public NarrowBridgeSimulation(JTextArea logs) {
         this.logs = logs;
         this.started = false;
-        allBuses =  Collections.synchronizedList(new ArrayList<>());
+        allBuses = Collections.synchronizedList(new ArrayList<>());
     }
 
     @Override
@@ -69,14 +67,14 @@ public class NarrowBridgeSimulation implements Runnable{
         return randomNumber <= westProbability ? Bus.DrivingDirection.WEST : Bus.DrivingDirection.EAST;
     }
 
-     synchronized void writeToLog(String message) {
+    synchronized void writeToLog(String message) {
         SwingUtilities.invokeLater(() -> logs.append(message + "\n"));
     }
 
     synchronized void getOnTheBridge(Bus bus) throws InterruptedException {
         busQueue.add(bus);
         support.firePropertyChange("Changed sizes", busQueue.size() - 1, busQueue.size());
-        while(!busCanGetOnBridge(bus)) {
+        while (!busCanGetOnBridge(bus)) {
             bus.setWaitingOnBridge(true);
             writeToLog(String.format("[%d -> %s]: czeka przed mostem", bus.getId(), bus.getDrivingDirection()));
             wait();
@@ -93,7 +91,7 @@ public class NarrowBridgeSimulation implements Runnable{
 
     private synchronized boolean busCanGetOnBridge(Bus bus) {
         if (renovation)
-            return  false;
+            return false;
         if (simulationType == SimulationTypes.ONLY_ONE || simulationType == SimulationTypes.HIGHWAY) {
             return busesOnTheBridge.size() < maxBusesOnBridge;
         } else if (simulationType == SimulationTypes.BIDIRECTIONAL) {
@@ -111,7 +109,7 @@ public class NarrowBridgeSimulation implements Runnable{
 
     synchronized void getOffTheBridge(Bus bus) throws InterruptedException {
         busesOnTheBridge.remove(bus);
-        writeToLog(String.format("[%d -> %s]: Opuszcza most",bus.getId(), bus.getDrivingDirection()));
+        writeToLog(String.format("[%d -> %s]: Opuszcza most", bus.getId(), bus.getDrivingDirection()));
         if (simulationType == SimulationTypes.UNIDIRECTIONAL) {
             if (busesOnTheBridge.isEmpty()) {
                 allowedDirection = null;
@@ -128,6 +126,7 @@ public class NarrowBridgeSimulation implements Runnable{
     public synchronized void changeRules(SimulationTypes simulationType) throws InterruptedException {
         renovation = true;
         while (!busesOnTheBridge.isEmpty()) {
+            System.out.println("XD");
             wait();
         }
         writeToLog("Rozpoczynam renowację mostu");
@@ -171,6 +170,7 @@ public class NarrowBridgeSimulation implements Runnable{
                 .map(Bus::toString)
                 .reduce("", (start, current) -> start + " " + current);
     }
+
     public JTextArea getLogs() {
         return logs;
     }
