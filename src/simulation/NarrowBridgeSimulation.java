@@ -4,12 +4,13 @@ import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class NarrowBridgeSimulation implements Runnable{
-
+    private static final int ANTI_DEADLOCK_CARS_LIMIT = 6;
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private JTextArea logs;
     private boolean started;
@@ -17,14 +18,23 @@ public class NarrowBridgeSimulation implements Runnable{
     private final LinkedList<Bus> busQueue = new LinkedList<>();
     private final List<Bus> busesOnTheBridge = new LinkedList<>();
 
-    private final List<Bus> allBuses = new ArrayList<>();
+    private final List<Bus> allBuses;
 
     private int maxBusesOnBridge = 1;
+
+    private volatile boolean renovation = false;
+
+    private SimulationTypes simulationType = SimulationTypes.ONLY_ONE;
+
+    private Bus.DrivingDirection allowedDirection;
+
+    private int drivenCarsInOneDirection = 0;
 
     private int pauseDelay;
     public NarrowBridgeSimulation(JTextArea logs) {
         this.logs = logs;
         this.started = false;
+        allBuses =  Collections.synchronizedList(new ArrayList<>());
     }
 
     @Override
@@ -60,22 +70,81 @@ public class NarrowBridgeSimulation implements Runnable{
 
     synchronized void getOnTheBridge(Bus bus) throws InterruptedException {
         busQueue.add(bus);
-        bus.setX(280);
         support.firePropertyChange("Changed sizes", busQueue.size() - 1, busQueue.size());
-        while(busesOnTheBridge.size() >= maxBusesOnBridge) {
+        while(!busCanGetOnBridge(bus)) {
+            bus.setWaitingOnBridge(true);
             writeToLog(String.format("[%d -> %s]: czeka przed mostem", bus.getId(), bus.getDrivingDirection()));
             wait();
         }
+        bus.setWaitingOnBridge(false);
         busQueue.remove(bus);
         busesOnTheBridge.add(bus);
+        if (simulationType == SimulationTypes.UNIDIRECTIONAL) {
+            allowedDirection = bus.getDrivingDirection();
+            drivenCarsInOneDirection++;
+        }
         support.firePropertyChange("Changed sizes", busQueue.size() - 1, busQueue.size());
     }
 
-    synchronized void getOffTheBridge(Bus bus) {
+    private synchronized boolean busCanGetOnBridge(Bus bus) {
+        if (renovation)
+            return  false;
+        if (simulationType == SimulationTypes.ONLY_ONE || simulationType == SimulationTypes.HIGHWAY) {
+            return busesOnTheBridge.size() < maxBusesOnBridge;
+        } else if (simulationType == SimulationTypes.BIDIRECTIONAL) {
+            long count = busesOnTheBridge.stream()
+                    .filter(b -> b.getDrivingDirection() == bus.getDrivingDirection())
+                    .count();
+            return count < maxBusesOnBridge / 2;
+        } else if (simulationType == SimulationTypes.UNIDIRECTIONAL) {
+            if (busesOnTheBridge.size() < maxBusesOnBridge && drivenCarsInOneDirection <= ANTI_DEADLOCK_CARS_LIMIT) {
+                return allowedDirection == null || bus.getDrivingDirection() == allowedDirection;
+            }
+        }
+        return false;
+    }
+
+    synchronized void getOffTheBridge(Bus bus) throws InterruptedException {
         busesOnTheBridge.remove(bus);
         writeToLog(String.format("[%d -> %s]: Opuszcza most",bus.getId(), bus.getDrivingDirection()));
+        if (simulationType == SimulationTypes.UNIDIRECTIONAL) {
+            if (busesOnTheBridge.isEmpty()) {
+                allowedDirection = null;
+                drivenCarsInOneDirection = 0;
+            } else if (drivenCarsInOneDirection >= ANTI_DEADLOCK_CARS_LIMIT) {
+                drivenCarsInOneDirection = 0;
+                allowedDirection = allowedDirection == Bus.DrivingDirection.EAST ? Bus.DrivingDirection.WEST : Bus.DrivingDirection.EAST;
+            }
+        }
         support.firePropertyChange("Changed sizes", busesOnTheBridge.size() - 1, busesOnTheBridge.size());
-        notify();
+        notifyAll();
+    }
+
+    public synchronized void changeRules(SimulationTypes simulationType) throws InterruptedException {
+        renovation = true;
+        while (!busesOnTheBridge.isEmpty()) {
+            wait();
+        }
+        writeToLog("Rozpoczynam renowację mostu");
+        wait(2000);
+        switch (simulationType) {
+            case ONLY_ONE:
+                maxBusesOnBridge = 1;
+                break;
+            case HIGHWAY:
+                maxBusesOnBridge = 9999;
+                break;
+            case BIDIRECTIONAL:
+                maxBusesOnBridge = 4;
+                break;
+            case UNIDIRECTIONAL:
+                maxBusesOnBridge = 2;
+                break;
+        }
+        this.simulationType = simulationType;
+        writeToLog("RENOWACJA MOSTU ZAKOŃCZONA.");
+        renovation = false;
+        notifyAll();
     }
 
     public void addPropertyChangeListener(PropertyChangeListener pcl) {

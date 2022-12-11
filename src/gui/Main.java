@@ -1,8 +1,11 @@
 package gui;
 
+import simulation.Bus;
 import simulation.NarrowBridgeSimulation;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,7 +17,7 @@ public class Main {
         new Thread(narrowBridgeSimulation).start();
         new Thread(() -> {
             while (true) {
-                paintPanel.repaint();
+                SwingUtilities.invokeLater(paintPanel::repaint);
                 try {
                     Thread.sleep(20);
                 } catch (InterruptedException e) {

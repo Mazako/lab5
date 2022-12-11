@@ -1,23 +1,26 @@
 package gui;
 
 import simulation.NarrowBridgeSimulation;
+import simulation.SimulationTypes;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Hashtable;
 
-public class MainFrame extends JFrame implements ChangeListener, PropertyChangeListener {
+public class MainFrame extends JFrame implements ChangeListener, PropertyChangeListener, ActionListener {
     public static final int WINDOW_WIDTH = 600;
     public static final int WINDOW_HEIGHT = 800;
     private final JLabel drivingLimitationsLabel = new JLabel("Ograniczenie ruchu: ");
     private final JLabel drivingIntensityLabel = new JLabel("Natężenie ruchu: ");
     private final JLabel atBridgeLabel = new JLabel("Na moście: ");
     private final JLabel queueLabel = new JLabel("    Kolejka: ");
-    private final JComboBox<?> drivingLimitationsComboBox = new JComboBox<>();
+    private final JComboBox<?> drivingLimitationsComboBox;
     private final JSlider drivingIntensitySlider = new JSlider();
     private final JTextField atBridgeTextField =  new JTextField();
     private final JTextField queueTextField = new JTextField();
@@ -42,8 +45,10 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
         drivingLimitationsLabel.setFont(labelFont);
         this.add(drivingLimitationsLabel);
 
+        drivingLimitationsComboBox = new JComboBox<>(SimulationTypes.values());
         drivingLimitationsComboBox.setFont(labelFont);
         drivingLimitationsComboBox.setPreferredSize(new Dimension(300, 20));
+        drivingLimitationsComboBox.addActionListener(this);
         this.add(drivingLimitationsComboBox);
 
         drivingIntensityLabel.setFont(labelFont);
@@ -105,5 +110,19 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
             atBridgeTextField.setText(bussesOnBridgeMessage);
             queueTextField.setText(waitingBusesStringMessage);
         });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == drivingLimitationsComboBox) {
+            SimulationTypes option = (SimulationTypes) drivingLimitationsComboBox.getSelectedItem();
+            new Thread(() -> {
+                try {
+                    narrowBridgeSimulation.changeRules(option);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }).start();
+        }
     }
 }

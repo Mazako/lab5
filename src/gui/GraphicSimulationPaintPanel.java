@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class GraphicSimulationPaintPanel extends JPanel implements MouseMotionListener {
@@ -36,7 +38,9 @@ public class GraphicSimulationPaintPanel extends JPanel implements MouseMotionLi
         paintBridge(g2d);
         paintTexts(g2d);
         synchronized (allBuses) {
-            allBuses.forEach(bus -> bus.drawBus(g2d));
+            for (Bus allBus : allBuses) {
+                allBus.drawBus(g2d);
+            }
         }
     }
 
@@ -99,6 +103,6 @@ public class GraphicSimulationPaintPanel extends JPanel implements MouseMotionLi
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        System.out.println(e.getX() + " " + e.getY());
+//        System.out.println(e.getX() + " " + e.getY());
     }
 }
