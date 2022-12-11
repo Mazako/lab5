@@ -29,8 +29,8 @@ public class NarrowBridgeSimulation implements Runnable{
     private Bus.DrivingDirection allowedDirection;
 
     private int drivenCarsInOneDirection = 0;
-
     private int pauseDelay;
+    private int westProbability = 50;
     public NarrowBridgeSimulation(JTextArea logs) {
         this.logs = logs;
         this.started = false;
@@ -61,7 +61,9 @@ public class NarrowBridgeSimulation implements Runnable{
     }
 
     private Bus.DrivingDirection chooseRandomDirection() {
-        return ThreadLocalRandom.current().nextInt(0, 2) == 0 ? Bus.DrivingDirection.EAST : Bus.DrivingDirection.WEST;
+        int randomNumber = ThreadLocalRandom.current().nextInt(1, 101);
+        System.out.println(randomNumber + " - " + westProbability);
+        return randomNumber <= westProbability ? Bus.DrivingDirection.WEST : Bus.DrivingDirection.EAST;
     }
 
      synchronized void writeToLog(String message) {
@@ -192,5 +194,9 @@ public class NarrowBridgeSimulation implements Runnable{
 
     public List<Bus> getAllBuses() {
         return allBuses;
+    }
+
+    public void setWestProbability(int westProbability) {
+        this.westProbability = westProbability;
     }
 }

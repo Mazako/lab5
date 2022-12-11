@@ -18,6 +18,11 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
     public static final int WINDOW_HEIGHT = 800;
     private final JLabel drivingLimitationsLabel = new JLabel("Ograniczenie ruchu: ");
     private final JLabel drivingIntensityLabel = new JLabel("Natężenie ruchu: ");
+
+    private final JLabel eastLabel = new JLabel("Wschód");
+    private final JLabel westLabel = new JLabel("Zachód");
+
+    private final JSlider sideProportionSlider = new JSlider();
     private final JLabel atBridgeLabel = new JLabel("Na moście: ");
     private final JLabel queueLabel = new JLabel("    Kolejka: ");
     private final JComboBox<?> drivingLimitationsComboBox;
@@ -26,6 +31,7 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
     private final JTextField queueTextField = new JTextField();
     private final JScrollPane logPanel = new JScrollPane();
     private final JTextArea logTextArea;
+
 
     private final NarrowBridgeSimulation narrowBridgeSimulation;
 
@@ -68,6 +74,21 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
         drivingIntensitySlider.addChangeListener(this);
         this.add(drivingIntensitySlider);
 
+        sideProportionSlider.setMinimum(0);
+        sideProportionSlider.setMaximum(100);
+        sideProportionSlider.setValue(50);
+        sideProportionSlider.setPaintLabels(true);
+        sideProportionSlider.setPaintTicks(true);
+        sideProportionSlider.setMajorTickSpacing(50);
+        Hashtable<Integer, JLabel> proportionLabels = new Hashtable<>();
+        proportionLabels.put(0, eastLabel);
+        proportionLabels.put(100, westLabel);
+        proportionLabels.put(50, new JLabel("1:1"));
+        sideProportionSlider.setLabelTable(proportionLabels);
+        sideProportionSlider.addChangeListener(this);
+        sideProportionSlider.setPreferredSize(new Dimension(500, 50));
+        this.add(sideProportionSlider);
+
         atBridgeLabel.setFont(labelFont);
         this.add(atBridgeLabel);
 
@@ -86,7 +107,7 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
         queueTextField.setBackground(Color.WHITE);
         this.add(queueTextField);
 
-        logPanel.setPreferredSize(new Dimension(550, 600));
+        logPanel.setPreferredSize(new Dimension(550, 500));
         logPanel.setViewportView(logTextArea);
         logTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
         logTextArea.setEditable(false);
@@ -99,6 +120,8 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == drivingIntensitySlider) {
             narrowBridgeSimulation.setPauseDelay(drivingIntensitySlider.getValue());
+        } else if (e.getSource() == sideProportionSlider) {
+            narrowBridgeSimulation.setWestProbability(sideProportionSlider.getValue());
         }
     }
 
