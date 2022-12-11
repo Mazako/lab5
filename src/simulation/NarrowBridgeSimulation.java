@@ -84,7 +84,6 @@ public class NarrowBridgeSimulation implements Runnable {
         busesOnTheBridge.add(bus);
         if (simulationType == SimulationTypes.UNIDIRECTIONAL) {
             allowedDirection = bus.getDrivingDirection();
-            drivenCarsInOneDirection++;
         }
         support.firePropertyChange("Changed sizes", busQueue.size() - 1, busQueue.size());
     }
@@ -111,12 +110,15 @@ public class NarrowBridgeSimulation implements Runnable {
         busesOnTheBridge.remove(bus);
         writeToLog(String.format("[%d -> %s]: Opuszcza most", bus.getId(), bus.getDrivingDirection()));
         if (simulationType == SimulationTypes.UNIDIRECTIONAL) {
+            drivenCarsInOneDirection++;
             if (busesOnTheBridge.isEmpty()) {
-                allowedDirection = null;
-                drivenCarsInOneDirection = 0;
-            } else if (drivenCarsInOneDirection >= ANTI_DEADLOCK_CARS_LIMIT) {
-                drivenCarsInOneDirection = 0;
-                allowedDirection = allowedDirection == Bus.DrivingDirection.EAST ? Bus.DrivingDirection.WEST : Bus.DrivingDirection.EAST;
+                if (drivenCarsInOneDirection >= ANTI_DEADLOCK_CARS_LIMIT) {
+                    drivenCarsInOneDirection = 0;
+                    allowedDirection = allowedDirection == Bus.DrivingDirection.EAST ? Bus.DrivingDirection.WEST : Bus.DrivingDirection.EAST;
+                } else {
+                    allowedDirection = null;
+                    drivenCarsInOneDirection = 0;
+                }
             }
         }
         support.firePropertyChange("Changed sizes", busesOnTheBridge.size() - 1, busesOnTheBridge.size());

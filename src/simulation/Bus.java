@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 public class Bus implements Runnable {
 
     public static final int MIN_BOARDING_TIME = 1000;
-    public static final int MAX_BOARDING_TIME = 10000;
+    public static final int MAX_BOARDING_TIME = 8000;
     public static final int GETTING_TO_BRIDGE_TIME = 500;
     public static final int CROSSING_BRIDGE_TIME = 3000;
     public static final int GETTING_PARKING_TIME = 500;
