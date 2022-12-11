@@ -1,3 +1,9 @@
+/*
+ *  Laboratorium 5
+ *
+ *   Autor: Michal Maziarz, 263 913
+ *    Data: grudzień 2022 r.
+ */
 package simulation;
 
 import javax.swing.*;
@@ -63,7 +69,6 @@ public class NarrowBridgeSimulation implements Runnable {
 
     private Bus.DrivingDirection chooseRandomDirection() {
         int randomNumber = ThreadLocalRandom.current().nextInt(1, 101);
-        System.out.println(randomNumber + " - " + westProbability);
         return randomNumber <= westProbability ? Bus.DrivingDirection.WEST : Bus.DrivingDirection.EAST;
     }
 

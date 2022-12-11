@@ -1,3 +1,9 @@
+/*
+ *  Laboratorium 5
+ *
+ *   Autor: Michal Maziarz, 263 913
+ *    Data: grudzień 2022 r.
+ */
 package gui;
 
 import simulation.NarrowBridgeSimulation;

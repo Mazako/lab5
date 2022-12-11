@@ -1,3 +1,9 @@
+/*
+ *  Laboratorium 5
+ *
+ *   Autor: Michal Maziarz, 263 913
+ *    Data: grudzień 2022 r.
+ */
 package gui;
 
 import simulation.NarrowBridgeSimulation;
@@ -19,7 +25,7 @@ import java.util.Hashtable;
 
 public class MainFrame extends JFrame implements ChangeListener, PropertyChangeListener, ActionListener {
     public static final int WINDOW_WIDTH = 600;
-    public static final int WINDOW_HEIGHT = 800;
+    public static final int WINDOW_HEIGHT = 825;
     private final JLabel drivingLimitationsLabel = new JLabel("Ograniczenie ruchu: ");
     private final JLabel drivingIntensityLabel = new JLabel("Natężenie ruchu: ");
 
@@ -40,6 +46,11 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
 
     private final NarrowBridgeSimulation narrowBridgeSimulation;
     private boolean clickedButton = false;
+
+    private final JMenuBar jMenuBar = new JMenuBar();
+        private final JMenu optionsMenuBar = new JMenu("Opcje");
+            private final JMenuItem aboutMenuItem = new JMenuItem("O prorgamie");
+            private final JMenuItem quitMenuItem = new JMenuItem("Wyjdź");
 
     public MainFrame(JTextArea logs, NarrowBridgeSimulation narrowBridgeSimulation) {
         this.logTextArea = logs;
@@ -124,6 +135,13 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
         stopSaveAndExitButton.addActionListener(this);
         this.add(stopSaveAndExitButton);
 
+        aboutMenuItem.addActionListener(this);
+        quitMenuItem.addActionListener(this);
+        optionsMenuBar.add(aboutMenuItem);
+        optionsMenuBar.add(quitMenuItem);
+        jMenuBar.add(optionsMenuBar);
+        this.setJMenuBar(jMenuBar);
+
         this.setVisible(true);
     }
 
@@ -187,6 +205,15 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
                 );
                 System.exit(0);
             }
+        } else if (e.getSource() == quitMenuItem) {
+            System.exit(0);
+        } else if (e.getSource() == aboutMenuItem) {
+            JOptionPane.showMessageDialog(this,
+                    "Prosta symulacja przejazdu samochodów przez most przy zadanych zasadach ruchu\n\n" +
+                            "Autor: Michał Maziarz, 263913",
+                    "O programie",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
         }
     }
 }
