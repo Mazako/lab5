@@ -16,7 +16,7 @@ public class Main {
         SwingUtilities.invokeLater(() -> new GraphicSimulationFrame(paintPanel));
         new Thread(narrowBridgeSimulation).start();
         new Thread(() -> {
-            while (true) {
+            while (narrowBridgeSimulation.isStarted()) {
                 SwingUtilities.invokeLater(paintPanel::repaint);
                 try {
                     Thread.sleep(20);

@@ -11,6 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Hashtable;
 
 public class MainFrame extends JFrame implements ChangeListener, PropertyChangeListener, ActionListener {
@@ -31,9 +35,11 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
     private final JTextField queueTextField = new JTextField();
     private final JScrollPane logPanel = new JScrollPane();
     private final JTextArea logTextArea;
+    private final JButton stopSaveAndExitButton = new JButton("Zatrzymaj symulację");
 
 
     private final NarrowBridgeSimulation narrowBridgeSimulation;
+    private boolean clickedButton = false;
 
     public MainFrame(JTextArea logs, NarrowBridgeSimulation narrowBridgeSimulation) {
         this.logTextArea = logs;
@@ -113,6 +119,11 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
         logTextArea.setEditable(false);
         logTextArea.setBackground(Color.WHITE);
         this.add(logPanel);
+
+        stopSaveAndExitButton.setPreferredSize(new Dimension(500, 45));
+        stopSaveAndExitButton.addActionListener(this);
+        this.add(stopSaveAndExitButton);
+
         this.setVisible(true);
     }
 
@@ -146,6 +157,36 @@ public class MainFrame extends JFrame implements ChangeListener, PropertyChangeL
                     throw new RuntimeException(ex);
                 }
             }).start();
+        } else if (e.getSource() == stopSaveAndExitButton) {
+            if (!clickedButton) {
+                narrowBridgeSimulation.setStarted(false);
+                stopSaveAndExitButton.setText("Zapisz logi do pliku tekstowego i wyjdź");
+                narrowBridgeSimulation.removePropertyChangeListener(this);
+                clickedButton = true;
+            } else {
+                JFileChooser jFileChooser = new JFileChooser();
+                jFileChooser.setCurrentDirectory(new File("./"));
+                jFileChooser.showSaveDialog(this);
+                File selectedFile = jFileChooser.getSelectedFile();
+                if (selectedFile == null) {
+                    return;
+                }
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(selectedFile))) {
+                    writer.write(logTextArea.getText());
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this,
+                            "Wystąpił błąd w zapisie do pliku. Spróbuj ponownie",
+                            "BŁĄD",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+                JOptionPane.showMessageDialog(this,
+                        "Pomyślnie zapisano logi. Program zostanie zamknięty",
+                        "Sukces",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+                System.exit(0);
+            }
         }
     }
 }

@@ -58,6 +58,9 @@ public class NarrowBridgeSimulation implements Runnable{
                 System.exit(1);
             }
         }
+        writeToLog("Koniec symulacji");
+        this.logs = new JTextArea();
+
     }
 
     private Bus.DrivingDirection chooseRandomDirection() {
